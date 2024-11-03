@@ -16,26 +16,27 @@ public class MrHalesOct31 {
             System.out.println();
         }
         System.out.println();
-        move(0,0,0,"");
+        move(0, 0, 0,"");
     }
-    public void move(int x , int y, int accruedCost, String pathString){
-        accruedCost=accruedCost+traffic[x][y];
-        if(x== traffic.length-1&&y== traffic[0].length-1){
+    public void move(int x, int y , int accruedCost, String pathString){
+        accruedCost+=traffic[y][x];
+        if(y== traffic.length-1&&x== traffic[0].length-1){
             System.out.println("Done. Cost = "+accruedCost+". Path was:"+pathString.substring(0,pathString.length()-1)+".");
         } else {
-            boolean spaceToGoRight = x<traffic.length-1;
-            boolean spaceToGoDown = y<traffic[0].length-1;
+            boolean spaceToGoDown = y<traffic.length-1;
+            boolean spaceToGoRight = x<traffic[0].length-1;
             if(spaceToGoRight){
-                move(x+1,y,accruedCost,pathString+" right,");
+                move(x+1, y, accruedCost,pathString+" right,");
             }
             if(spaceToGoDown){
-                move(x,y+1,accruedCost,pathString+" down,");
+                move(x, y+1, accruedCost,pathString+" down,");
             }
-            if(spaceToGoDown&&spaceToGoRight) {
-                move(x + 1, y + 1,accruedCost,pathString+" diagonal,");
+            if(spaceToGoRight&&spaceToGoDown) {
+                move(x + 1, y + 1, accruedCost,pathString+" diagonal,");
             }
         }
     }
+    //TODO: only print out the cheapest directions
 
 
 
