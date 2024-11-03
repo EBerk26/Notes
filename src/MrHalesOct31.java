@@ -9,7 +9,8 @@ public class MrHalesOct31 {
         new MrHalesOct31();
     }
     public MrHalesOct31() {
-        traffic=new int[3][3];
+        long startTime = System.currentTimeMillis();
+        traffic=new int[20][20];
         bestCost = 99*traffic.length; //the highest possible cost of just going diagonal
         for(int x =0;x< traffic.length;x++){
             for(int y =0;y< traffic[0].length;y++){
@@ -21,6 +22,7 @@ public class MrHalesOct31 {
         System.out.println();
         move(0, 0, 0,"");
         System.out.println(bestRoute);
+        System.out.println("This took "+(System.currentTimeMillis()-startTime)+" millisecond(s)");
     }
     public void move(int x, int y , int accruedCost, String pathString){
         accruedCost+=traffic[y][x];
@@ -43,9 +45,5 @@ public class MrHalesOct31 {
             }
         }
     }
-    //TODO: only print out the cheapest directions
-
-
-
     //in the beginning our goal is to traverse from the top left to the bottom right the cheapest way possible
 }
