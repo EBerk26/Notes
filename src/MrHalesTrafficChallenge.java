@@ -3,11 +3,11 @@ public class MrHalesTrafficChallenge {
     public int[][] traffic;
     int bestCost;
     String bestRoute;
-    int size=4;
-    int endX = 0;
-    int endY = 0;
-    int startX = size-1;
-    int startY = size-1;
+    int size=10;
+    int endX = 3;
+    int endY = 8;
+    int startX = 8;
+    int startY = 3;
 
 
 
@@ -24,7 +24,15 @@ public class MrHalesTrafficChallenge {
         for(int y =0;y< traffic[0].length;y++){
             for(int x =0;x< traffic.length;x++){
                 traffic[x][y] =(int)(100*Math.random());
-                System.out.print(traffic[x][y]+" ");
+                if(x==startX&&y==startY){
+                    System.out.print(TextColors.GREEN+traffic[x][y]+TextColors.RESET+" ");
+                } else if(x==endX&&y==endY){
+                    System.out.print(TextColors.RED+traffic[x][y]+TextColors.RESET+" ");
+                } else if (traffic[x][y]<10){
+                    System.out.print(traffic[x][y] + "  ");
+                } else{
+                    System.out.print(traffic[x][y] + " ");
+                }
             }
             System.out.println();
         }
