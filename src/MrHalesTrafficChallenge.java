@@ -2,12 +2,13 @@ public class MrHalesTrafficChallenge {
 
     public int[][] traffic;
     int bestCost;
-    String bestRoute;
+    String bestRouteString;
     int size=10;
-    int endX = 3;
-    int endY = 8;
-    int startX = 8;
-    int startY = 3;
+    int endX = 0;
+    int endY = 0;
+    int startX = size-1;
+    int startY = size-1;
+    boolean[][] bestPath;
 
 
 
@@ -15,6 +16,7 @@ public class MrHalesTrafficChallenge {
         new MrHalesTrafficChallenge();
     }
     public MrHalesTrafficChallenge() {
+        bestPath = new boolean[size][size];
         traffic=new int[size][size];
         if(Math.abs(startX-endX)>Math.abs(startY-endY)){
             bestCost=99*Math.abs(startX-endX);
@@ -28,10 +30,11 @@ public class MrHalesTrafficChallenge {
                     System.out.print(TextColors.GREEN+traffic[x][y]+TextColors.RESET+" ");
                 } else if(x==endX&&y==endY){
                     System.out.print(TextColors.RED+traffic[x][y]+TextColors.RESET+" ");
-                } else if (traffic[x][y]<10){
-                    System.out.print(traffic[x][y] + "  ");
                 } else{
                     System.out.print(traffic[x][y] + " ");
+                }
+                if(traffic[x][y]<10){
+                    System.out.print(" ");
                 }
             }
             System.out.println();
@@ -45,15 +48,36 @@ public class MrHalesTrafficChallenge {
         }
         long startTime = System.currentTimeMillis();
         move(startX, startY, 0,"",falseArray);
-        System.out.println(bestRoute);
+        System.out.println(bestRouteString);
         System.out.println("This took "+(System.currentTimeMillis()-startTime)+" millisecond(s).");
+        System.out.println();
+        for(int y =0;y< traffic[0].length;y++){
+            for(int x =0;x< traffic.length;x++){
+                if(x==startX&&y==startY){
+                    System.out.print(TextColors.GREEN+traffic[x][y]+TextColors.RESET+" ");
+                } else if(x==endX&&y==endY){
+                    System.out.print(TextColors.RED+traffic[x][y]+TextColors.RESET+" ");
+                } else if(bestPath[y][x]){
+                    System.out.print(TextColors.YELLOW+traffic[x][y] + " "+TextColors.RESET);
+                } else{
+                    System.out.print(traffic[x][y]+" ");
+                }
+                if(traffic[x][y]<10){
+                    System.out.print(" ");
+                }
+            }
+            System.out.println();
+        }
     }
     public void move(int x, int y , int accruedCost, String pathString,boolean[][] placesVisited){
         accruedCost+=traffic[x][y];
         if(accruedCost<bestCost) {//if your cost at any point can be beaten, don't continue down that path.
             if (y == endY && x == endX) {
                 bestCost = accruedCost;
-                bestRoute="Done. Cost = " + accruedCost + ". Path was:" + pathString.substring(0, pathString.length() - 1) + ".";
+                bestRouteString ="Done. Cost = " + accruedCost + ". Path was:" + pathString.substring(0, pathString.length() - 1) + ".";
+                for(int a =0;a< placesVisited.length;a++){
+                    System.arraycopy(placesVisited[a], 0, bestPath[a], 0, placesVisited[0].length);
+                }
             }else {
                 boolean[][] newPlacesVisited = new boolean[placesVisited.length][placesVisited[0].length];
                 for(int a =0;a< placesVisited.length;a++){
@@ -194,11 +218,5 @@ split into chunks, find the best path through each of them, and string all the c
 create a new matrix that's sort of like a heat map - where every cell is the sum of all the cells around it or something
 work backwards and forwards
 start prioritizing earlier - if we realize that a certain path is not so great, we don't need to exhaust it.
- */
-
-/* Eli - expected expansions to the question
-Any two starting points
-Moving up, left, and other diagonals - ensure not to bounce back and forth infinitely
-
  */
 
