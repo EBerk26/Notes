@@ -4,42 +4,20 @@ public class MrHalesTrafficChallenge {
     int bestCost;
     String bestRouteString;
     int size=10;
-    int endX = 0;
-    int endY = 0;
-    int startX = size-1;
-    int startY = size-1;
     boolean[][] bestPath;
 
 
 
     public static void main(String[] args) {
-        new MrHalesTrafficChallenge();
+        //new MrHalesTrafficChallenge();
     }
-    public MrHalesTrafficChallenge() {
+    public MrHalesTrafficChallenge(int[][]traffic,int size,int startX,int startY,int endX,int endY) {
         bestPath = new boolean[size][size];
-        traffic=new int[size][size];
         if(Math.abs(startX-endX)>Math.abs(startY-endY)){
             bestCost=99*Math.abs(startX-endX);
         } else{
             bestCost=99*Math.abs(startY-endY);
         }
-        for(int y =0;y< traffic[0].length;y++){
-            for(int x =0;x< traffic.length;x++){
-                traffic[x][y] =(int)(100*Math.random());
-                if(x==startX&&y==startY){
-                    System.out.print(TextColors.GREEN+traffic[x][y]+TextColors.RESET+" ");
-                } else if(x==endX&&y==endY){
-                    System.out.print(TextColors.RED+traffic[x][y]+TextColors.RESET+" ");
-                } else{
-                    System.out.print(traffic[x][y] + " ");
-                }
-                if(traffic[x][y]<10){
-                    System.out.print(" ");
-                }
-            }
-            System.out.println();
-        }
-        System.out.println();
         boolean[][] falseArray = new boolean[size][size];
         for(int x = 0;x< falseArray.length;x++){
             for(int y = 0;y<falseArray[0].length;y++){
@@ -47,10 +25,7 @@ public class MrHalesTrafficChallenge {
             }
         }
         long startTime = System.currentTimeMillis();
-        move(startX, startY, 0,"",falseArray);
-        System.out.println(bestRouteString);
-        System.out.println("This took "+(System.currentTimeMillis()-startTime)+" millisecond(s).");
-        System.out.println();
+        move(startX,startY,0,"",falseArray,traffic,endX,endY);
         for(int y =0;y< traffic[0].length;y++){
             for(int x =0;x< traffic.length;x++){
                 if(x==startX&&y==startY){
@@ -68,8 +43,9 @@ public class MrHalesTrafficChallenge {
             }
             System.out.println();
         }
+        System.out.println("Cost: "+bestCost+". Exhaustive Solution took "+(System.currentTimeMillis()-startTime)+" millisecond(s).");
     }
-    public void move(int x, int y , int accruedCost, String pathString,boolean[][] placesVisited){
+    public void move(int x, int y , int accruedCost, String pathString,boolean[][] placesVisited,int[][]traffic, int endX,int endY){
         accruedCost+=traffic[x][y];
         if(accruedCost<bestCost) {//if your cost at any point can be beaten, don't continue down that path.
             if (y == endY && x == endX) {
@@ -94,123 +70,124 @@ public class MrHalesTrafficChallenge {
                 boolean targetIsSouth = y<endY;
                 boolean targetIsWest = x>endX;
                 if(targetIsNorth&&targetIsEast){
-                    moveNorthEast(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest);
-                    moveNorth(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest);
-                    moveEast(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest);
-                    moveSouthEast(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest);
-                    moveNorthWest(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest);
-                    moveSouth(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest);
-                    moveWest(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest);
-                    moveSouthWest(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest);
+                    moveNorthEast(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest,endX,endY,traffic);
+                    moveNorth(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest,endX,endY,traffic);
+                    moveEast(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest,endX,endY,traffic);
+                    moveSouthEast(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest,endX,endY,traffic);
+                    moveNorthWest(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest,endX,endY,traffic);
+                    moveSouth(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest,endX,endY,traffic);
+                    moveWest(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest,endX,endY,traffic);
+                    moveSouthWest(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest,endX,endY,traffic);
                 } else if (targetIsSouth&&targetIsEast){
-                    moveSouthEast(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest);
-                    moveSouth(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest);
-                    moveEast(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest);
-                    moveNorthEast(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest);
-                    moveSouthWest(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest);
-                    moveNorth(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest);
-                    moveWest(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest);
-                    moveNorthWest(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest);
+                    moveSouthEast(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest,endX,endY,traffic);
+                    moveSouth(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest,endX,endY,traffic);
+                    moveEast(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest,endX,endY,traffic);
+                    moveNorthEast(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest,endX,endY,traffic);
+                    moveSouthWest(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest,endX,endY,traffic);
+                    moveNorth(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest,endX,endY,traffic);
+                    moveWest(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest,endX,endY,traffic);
+                    moveNorthWest(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest,endX,endY,traffic);
                 } else if (targetIsSouth&&targetIsWest){
-                    moveSouthWest(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest);
-                    moveSouth(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest);
-                    moveWest(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest);
-                    moveNorthWest(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest);
-                    moveSouthEast(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest);
-                    moveNorth(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest);
-                    moveEast(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest);
-                    moveNorthEast(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest);
+                    moveSouthWest(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest,endX,endY,traffic);
+                    moveSouth(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest,endX,endY,traffic);
+                    moveWest(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest,endX,endY,traffic);
+                    moveNorthWest(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest,endX,endY,traffic);
+                    moveSouthEast(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest,endX,endY,traffic);
+                    moveNorth(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest,endX,endY,traffic);
+                    moveEast(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest,endX,endY,traffic);
+                    moveNorthEast(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest,endX,endY,traffic);
                 } else if (targetIsNorth&&targetIsWest){
-                    moveNorthWest(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest);
-                    moveNorth(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest);
-                    moveWest(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest);
-                    moveSouthWest(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest);
-                    moveNorthEast(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest);
-                    moveSouth(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest);
-                    moveEast(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest);
-                    moveSouthEast(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest);
+                    moveNorthWest(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest,endX,endY,traffic);
+                    moveNorth(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest,endX,endY,traffic);
+                    moveWest(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest,endX,endY,traffic);
+                    moveSouthWest(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest,endX,endY,traffic);
+                    moveNorthEast(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest,endX,endY,traffic);
+                    moveSouth(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest,endX,endY,traffic);
+                    moveEast(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest,endX,endY,traffic);
+                    moveSouthEast(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest,endX,endY,traffic);
                 } else if (targetIsNorth){
-                    moveNorth(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest);
-                    moveNorthWest(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest);
-                    moveNorthEast(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest);
-                    moveEast(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest);
-                    moveWest(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest);
-                    moveSouthWest(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest);
-                    moveSouthEast(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest);
-                    moveSouth(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest);
+                    moveNorth(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest,endX,endY,traffic);
+                    moveNorthWest(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest,endX,endY,traffic);
+                    moveNorthEast(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest,endX,endY,traffic);
+                    moveEast(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest,endX,endY,traffic);
+                    moveWest(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest,endX,endY,traffic);
+                    moveSouthWest(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest,endX,endY,traffic);
+                    moveSouthEast(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest,endX,endY,traffic);
+                    moveSouth(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest,endX,endY,traffic);
                 } else if (targetIsEast){
-                    moveEast(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest);
-                    moveSouthEast(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest);
-                    moveNorthEast(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest);
-                    moveNorth(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest);
-                    moveSouth(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest);
-                    moveNorthWest(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest);
-                    moveSouthWest(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest);
-                    moveWest(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest);
+                    moveEast(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest,endX,endY,traffic);
+                    moveSouthEast(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest,endX,endY,traffic);
+                    moveNorthEast(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest,endX,endY,traffic);
+                    moveNorth(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest,endX,endY,traffic);
+                    moveSouth(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest,endX,endY,traffic);
+                    moveNorthWest(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest,endX,endY,traffic);
+                    moveSouthWest(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest,endX,endY,traffic);
+                    moveWest(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest,endX,endY,traffic);
                 } else if (targetIsSouth){
-                    moveSouth(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest);
-                    moveSouthWest(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest);
-                    moveSouthEast(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest);
-                    moveEast(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest);
-                    moveWest(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest);
-                    moveNorthWest(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest);
-                    moveNorthEast(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest);
-                    moveNorth(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest);
+                    moveSouth(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest,endX,endY,traffic);
+                    moveSouthWest(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest,endX,endY,traffic);
+                    moveSouthEast(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest,endX,endY,traffic);
+                    moveEast(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest,endX,endY,traffic);
+                    moveWest(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest,endX,endY,traffic);
+                    moveNorthWest(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest,endX,endY,traffic);
+                    moveNorthEast(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest,endX,endY,traffic);
+                    moveNorth(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest,endX,endY,traffic);
                 } else if (targetIsWest){
-                    moveWest(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest);
-                    moveSouthWest(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest);
-                    moveNorthWest(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest);
-                    moveNorth(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest);
-                    moveSouth(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest);
-                    moveNorthEast(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest);
-                    moveSouthEast(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest);
-                    moveEast(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest);
+                    moveWest(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest,endX,endY,traffic);
+                    moveSouthWest(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest,endX,endY,traffic);
+                    moveNorthWest(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest,endX,endY,traffic);
+                    moveNorth(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest,endX,endY,traffic);
+                    moveSouth(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest,endX,endY,traffic);
+                    moveNorthEast(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest,endX,endY,traffic);
+                    moveSouthEast(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest,endX,endY,traffic);
+                    moveEast(x,y,accruedCost,pathString,newPlacesVisited,spaceToMoveNorth,spaceToMoveEast,spaceToMoveSouth,spaceToMoveWest,endX,endY,traffic);
                 }
             }
         }
     }
 
 
-    void moveNorth(int x, int y, int accruedCost,String pathString,boolean[][] placesVisited,boolean north, boolean east, boolean south, boolean west){
+    void moveNorth(int x, int y, int accruedCost,String pathString,boolean[][] placesVisited,boolean north, boolean east, boolean south, boolean west,int endX,int endY,int[][]traffic){
         if(north&&!placesVisited[y-1][x]) {
-            move(x, y - 1, accruedCost, pathString + " north,", placesVisited);
+            move(x, y - 1, accruedCost, pathString + " north,", placesVisited,traffic,endX,endY);
         }
     }
-    void moveSouth(int x, int y, int accruedCost,String pathString,boolean[][] placesVisited,boolean north, boolean east, boolean south, boolean west){
-        if(south&&!placesVisited[y+1][x]) {
-            move(x, y + 1, accruedCost, pathString + " south,", placesVisited);
-        }
-    }
-    void moveWest(int x, int y, int accruedCost,String pathString,boolean[][] placesVisited,boolean north, boolean east, boolean south, boolean west){
-        if(west&&!placesVisited[y][x-1]) {
-            move(x - 1, y, accruedCost, pathString + " west,", placesVisited);
-        }
-    }
-    void moveEast(int x, int y, int accruedCost,String pathString,boolean[][] placesVisited,boolean north, boolean east, boolean south, boolean west){
+    void moveEast(int x, int y, int accruedCost,String pathString,boolean[][] placesVisited,boolean north, boolean east, boolean south, boolean west,int endX,int endY,int[][]traffic){
         if(east&&!placesVisited[y][x+1]) {
-            move(x + 1, y, accruedCost, pathString + " east,", placesVisited);
+            move(x+1, y, accruedCost, pathString + " east,", placesVisited,traffic,endX,endY);
         }
     }
-    void moveNorthEast(int x, int y, int accruedCost,String pathString,boolean[][] placesVisited,boolean north, boolean east, boolean south, boolean west){
-        if(north&&east&&!placesVisited[y-1][x+1]) {
-            move(x + 1, y - 1, accruedCost, pathString + " northeast,", placesVisited);
+    void moveSouth(int x, int y, int accruedCost,String pathString,boolean[][] placesVisited,boolean north, boolean east, boolean south, boolean west,int endX,int endY,int[][]traffic){
+        if(south&&!placesVisited[y+1][x]) {
+            move(x, y + 1, accruedCost, pathString + " south,", placesVisited,traffic,endX,endY);
         }
     }
-    void moveSouthEast(int x, int y, int accruedCost,String pathString,boolean[][] placesVisited,boolean north, boolean east, boolean south, boolean west){
+    void moveWest(int x, int y, int accruedCost,String pathString,boolean[][] placesVisited,boolean north, boolean east, boolean south, boolean west,int endX,int endY,int[][]traffic){
+        if(west&&!placesVisited[y][x-1]) {
+            move(x-1, y, accruedCost, pathString + " west,", placesVisited,traffic,endX,endY);
+        }
+    }
+    void moveNorthEast(int x, int y, int accruedCost,String pathString,boolean[][] placesVisited,boolean north, boolean east, boolean south, boolean west,int endX,int endY,int[][]traffic){
+        if(east&&north&&!placesVisited[y-1][x+1]) {
+            move(x+1, y-1, accruedCost, pathString + " northeast,", placesVisited,traffic,endX,endY);
+        }
+    }
+    void moveSouthEast(int x, int y, int accruedCost,String pathString,boolean[][] placesVisited,boolean north, boolean east, boolean south, boolean west,int endX,int endY,int[][]traffic){
         if(south&&east&&!placesVisited[y+1][x+1]) {
-            move(x + 1, y + 1, accruedCost, pathString + " southeast,", placesVisited);
+            move(x+1, y+1, accruedCost, pathString + " southeast,", placesVisited,traffic,endX,endY);
         }
     }
-    void moveSouthWest(int x, int y, int accruedCost,String pathString,boolean[][] placesVisited,boolean north, boolean east, boolean south, boolean west){
+    void moveSouthWest(int x, int y, int accruedCost,String pathString,boolean[][] placesVisited,boolean north, boolean east, boolean south, boolean west,int endX,int endY,int[][]traffic){
         if(south&&west&&!placesVisited[y+1][x-1]) {
-            move(x - 1, y + 1, accruedCost, pathString + " southwest,", placesVisited);
+            move(x-1, y+1, accruedCost, pathString + " southwest,", placesVisited,traffic,endX,endY);
         }
     }
-    void moveNorthWest(int x, int y, int accruedCost,String pathString,boolean[][] placesVisited,boolean north, boolean east, boolean south, boolean west){
+    void moveNorthWest(int x, int y, int accruedCost,String pathString,boolean[][] placesVisited,boolean north, boolean east, boolean south, boolean west,int endX,int endY,int[][]traffic){
         if(north&&west&&!placesVisited[y-1][x-1]) {
-            move(x - 1, y - 1, accruedCost, pathString + " northwest,", placesVisited);
+            move(x-1, y-1, accruedCost, pathString + " northwest,", placesVisited,traffic,endX,endY);
         }
     }
+
 }
 /* Potential ways to make this more efficient - note that none of these will be perfect anymore due to a lack of exhaustive search
 Make the matrix smaller by turning each 2x2 into a sum of all the parts, finding the best path in a matrix 1/4 the size, and then expanding back out.

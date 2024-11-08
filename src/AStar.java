@@ -227,7 +227,11 @@ public class AStar {
         System.out.print("Cost: "+((input.parent.g+traffic[input.x][input.y]))+". ");
 
         if (distanceCoefficient != 0) {
-            System.out.println("A* solution took "+(System.currentTimeMillis()-startTime)+" milliseconds.");
+            if(distanceCoefficient==50) {
+                System.out.println("A* solution took " + (System.currentTimeMillis() - startTime) + " milliseconds.");
+            } else {
+                System.out.println("A* ("+ distanceCoefficient+") solution took " + (System.currentTimeMillis() - startTime) + " milliseconds.");
+            }
         } else {
             System.out.println("Dijkstra's Algorithm solution took "+(System.currentTimeMillis()-startTime)+" milliseconds.");
         }

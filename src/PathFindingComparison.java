@@ -1,17 +1,19 @@
 public class PathFindingComparison {
     int[][] traffic;
-    int size = 20;
-    boolean printUnsolvedTraffic = false;
+    int size = 10;
     int startX =0;
     int startY=0;
     int endX=size-1;
     int endY=size-1;
-
     public PathFindingComparison() {
-        initializeTraffic(size,printUnsolvedTraffic,startX,startY,endX,endY);
-        new AStar(traffic,startX,startY,endX,endY,40,size);
-        System.out.println();
+        initializeTraffic(size,false,startX,startY,endX,endY);
         new AStar(traffic,startX,startY,endX,endY,0,size);
+        System.out.println();
+        /*for(int x =100;x>=0;x-=10){
+            new AStar(traffic,startX,startY,endX,endY,x,size);
+            System.out.println();
+        }*/
+        new MrHalesTrafficChallenge(traffic,size,startX,startY,endX,endY);
         System.out.println();
         System.out.println("The most direct path would have an average cost of "+(size*50)+".");
     }
