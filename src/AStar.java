@@ -1,12 +1,17 @@
+//TODO: ensure that all children are added to the open list before the next parent is chosen
 public class AStar {
     Path[] openList;
     Path[] closedList;
     long startTime;
+    public int[][] traffic;
+
+    public static void main(String[] args) {
+    }
     //in general higher is faster but worse score. 0 is guaranteed to be perfect, 99 puts a really heavy emphasis on the future so will lean towards the most direct path
     public AStar(int[][] traffic, int startX, int startY, int endX, int endY,int distanceCoefficient,int size) {
         openList=new Path[1];
         closedList = new Path[0];
-        openList[0]=new Path("",traffic[startX][startY],traffic[startX][startY],startX,startY);
+        openList[0]=new Path(traffic[startX][startY],traffic[startX][startY],startX,startY);
         startTime = System.currentTimeMillis();
         while(openList.length!=0){
             int bestF = 100*distance(startX,startY,endX,endY);
@@ -29,7 +34,7 @@ public class AStar {
                     if(successor[x].x==endX&&successor[x].y==endY){
                         printOutPath(successor[x],traffic,startX,startY,endX,endY,distanceCoefficient);
                         break;
-                    } else if (successor[x].x<size&&successor[x].x>0&&successor[x].y<size&&successor[x].y>0){
+                    } else if (successor[x].y>0){
                         successor[x].g=q.g+traffic[successor[x].x][successor[x].y];
                         successor[x].h=distanceCoefficient*distance(successor[x].x,successor[x].y,endX,endY);
                         successor[x].f=successor[x].g+successor[x].h;
@@ -44,7 +49,7 @@ public class AStar {
                     if(successor[x].x==endX&&successor[x].y==endY){
                         printOutPath(successor[x],traffic,startX,startY,endX,endY,distanceCoefficient);
                         break;
-                    } else if (successor[x].x<size&&successor[x].x>0&&successor[x].y<size&&successor[x].y>0) {
+                    } else if (successor[x].x<size-1&&successor[x].y>0) {
                         successor[x].g = q.g + traffic[successor[x].x][successor[x].y];
                         successor[x].h = distanceCoefficient * distance(successor[x].x, successor[x].y,endX,endY);
                         successor[x].f = successor[x].g + successor[x].h;
@@ -59,7 +64,7 @@ public class AStar {
                     if(successor[x].x==endX&&successor[x].y==endY){
                         printOutPath(successor[x],traffic,startX,startY,endX,endY,distanceCoefficient);
                         break;
-                    } else if (successor[x].x<size&&successor[x].x>0&&successor[x].y<size&&successor[x].y>0) {
+                    } else if (successor[x].x<size-1) {
                         successor[x].g = q.g + traffic[successor[x].x][successor[x].y];
                         successor[x].h = distanceCoefficient * distance(successor[x].x, successor[x].y,endX,endY);
                         successor[x].f = successor[x].g + successor[x].h;
@@ -74,7 +79,7 @@ public class AStar {
                     if(successor[x].x==endX&&successor[x].y==endY){
                         printOutPath(successor[x],traffic,startX,startY,endX,endY,distanceCoefficient);
                         break;
-                    } else if (successor[x].x<size&&successor[x].x>0&&successor[x].y<size&&successor[x].y>0) {
+                    } else if (successor[x].y<size-1&&successor[x].x<size-1) {
                         successor[x].g = q.g + traffic[successor[x].x][successor[x].y];
                         successor[x].h = distanceCoefficient * distance(successor[x].x, successor[x].y,endX,endY);
                         successor[x].f = successor[x].g + successor[x].h;
@@ -89,7 +94,7 @@ public class AStar {
                     if(successor[x].x==endX&&successor[x].y==endY){
                         printOutPath(successor[x],traffic,startX,startY,endX,endY,distanceCoefficient);
                         break;
-                    } else if (successor[x].x<size&&successor[x].x>0&&successor[x].y<size&&successor[x].y>0) {
+                    } else if (successor[x].y<size-1) {
                         successor[x].g = q.g + traffic[successor[x].x][successor[x].y];
                         successor[x].h = distanceCoefficient * distance(successor[x].x, successor[x].y,endX,endY);
                         successor[x].f = successor[x].g + successor[x].h;
@@ -104,7 +109,7 @@ public class AStar {
                     if(successor[x].x==endX&&successor[x].y==endY){
                         printOutPath(successor[x],traffic,startX,startY,endX,endY,distanceCoefficient);
                         break;
-                    } else if (successor[x].x<size&&successor[x].x>0&&successor[x].y<size&&successor[x].y>0) {
+                    } else if (successor[x].x>0&&successor[x].y<size-1) {
                         successor[x].g = q.g + traffic[successor[x].x][successor[x].y];
                         successor[x].h = distanceCoefficient * distance(successor[x].x, successor[x].y,endX,endY);
                         successor[x].f = successor[x].g + successor[x].h;
@@ -119,7 +124,7 @@ public class AStar {
                     if(successor[x].x==endX&&successor[x].y==endY){
                         printOutPath(successor[x],traffic,startX,startY,endX,endY,distanceCoefficient);
                         break;
-                    } else if (successor[x].x<size&&successor[x].x>0&&successor[x].y<size&&successor[x].y>0) {
+                    } else if (successor[x].x>0) {
                         successor[x].g = q.g + traffic[successor[x].x][successor[x].y];
                         successor[x].h = distanceCoefficient * distance(successor[x].x, successor[x].y,endX,endY);
                         successor[x].f = successor[x].g + successor[x].h;
@@ -134,7 +139,7 @@ public class AStar {
                     if(successor[x].x==endX&&successor[x].y==endY){
                         printOutPath(successor[x],traffic,startX,startY,endX,endY,distanceCoefficient);
                         break;
-                    } else if (successor[x].x<size&&successor[x].x>0&&successor[x].y<size&&successor[x].y>0) {
+                    } else if (successor[x].x>0&&successor[x].y>0) {
                         successor[x].g = q.g + traffic[successor[x].x][successor[x].y];
                         successor[x].h = distanceCoefficient * distance(successor[x].x, successor[x].y,endX,endY);
                         successor[x].f = successor[x].g + successor[x].h;
@@ -236,8 +241,6 @@ public class AStar {
             System.out.println("Dijkstra's Algorithm solution took "+(System.currentTimeMillis()-startTime)+" milliseconds.");
         }
     }
-
-
 }
 
 /* Pseudocode - source: https://www.geeksforgeeks.org/a-search-algorithm/

@@ -43,7 +43,7 @@ public class MrHalesTrafficChallenge {
             }
             System.out.println();
         }
-        System.out.println("Cost: "+bestCost+". Exhaustive Solution took "+(System.currentTimeMillis()-startTime)+" millisecond(s).");
+        System.out.println("Cost: "+bestCost+". Exhaustive solution took "+(System.currentTimeMillis()-startTime)+" millisecond(s).");
     }
     public void move(int x, int y , int accruedCost, String pathString,boolean[][] placesVisited,int[][]traffic, int endX,int endY){
         accruedCost+=traffic[x][y];

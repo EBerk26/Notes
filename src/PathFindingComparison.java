@@ -14,8 +14,9 @@ public class PathFindingComparison {
             System.out.println();
         }*/
         new MrHalesTrafficChallenge(traffic,size,startX,startY,endX,endY);
-        System.out.println();
         System.out.println("The most direct path would have an average cost of "+(size*50)+".");
+
+        System.out.println();
     }
     public static void main(String[] args) {
         new PathFindingComparison();

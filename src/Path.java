@@ -1,5 +1,4 @@
 public class Path {
-    String howToGetThere;
     int g;
     int f;
     int x;
@@ -10,8 +9,7 @@ public class Path {
     Path parent;
     boolean hasParent = false;
     int generation=0;
-    public Path(String howToGetThere,int g,int f,int x,int y) {
-        this.howToGetThere=howToGetThere;
+    public Path(int g, int f, int x, int y) {
         this.g=g;
         this.f=f;
         this.x=x;
