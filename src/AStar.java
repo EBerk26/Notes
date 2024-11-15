@@ -2,8 +2,8 @@
 public class AStar {
     Path[] openList;
     Path[] closedList;
+    Path[] completeList;
     long startTime;
-    public int[][] traffic;
 
     public static void main(String[] args) {
     }
@@ -11,6 +11,7 @@ public class AStar {
     public AStar(int[][] traffic, int startX, int startY, int endX, int endY,int distanceCoefficient,int size) {
         openList=new Path[1];
         closedList = new Path[0];
+        completeList = new Path[0];
         openList[0]=new Path(traffic[startX][startY],traffic[startX][startY],startX,startY);
         startTime = System.currentTimeMillis();
         while(openList.length!=0){
@@ -24,6 +25,7 @@ public class AStar {
             }
             Path q = openList[bestIndex];
             removeFromOpenList(bestIndex);
+            //System.out.println("Checking: ("+(q.x)+","+(q.y)+")");
             Path[] successor = new Path[9];
             for(int x =1;x<=8;x++){
                 successor[x]=new Path();
@@ -38,7 +40,7 @@ public class AStar {
                         successor[x].g=q.g+traffic[successor[x].x][successor[x].y];
                         successor[x].h=distanceCoefficient*distance(successor[x].x,successor[x].y,endX,endY);
                         successor[x].f=successor[x].g+successor[x].h;
-                        boolean betterSolutionExistsForSamePlace = isBetterSolutionExistsForSamePlace(successor, x);
+                        boolean betterSolutionExistsForSamePlace = doesBetterSolutionExistForSamePlace(successor, x);
                         if(!betterSolutionExistsForSamePlace){
                             addToList(successor[x],"open");
                         }
@@ -53,7 +55,7 @@ public class AStar {
                         successor[x].g = q.g + traffic[successor[x].x][successor[x].y];
                         successor[x].h = distanceCoefficient * distance(successor[x].x, successor[x].y,endX,endY);
                         successor[x].f = successor[x].g + successor[x].h;
-                        boolean betterSolutionExistsForSamePlace = isBetterSolutionExistsForSamePlace(successor, x);
+                        boolean betterSolutionExistsForSamePlace = doesBetterSolutionExistForSamePlace(successor, x);
                         if (!betterSolutionExistsForSamePlace) {
                             addToList(successor[x], "open");
                         }
@@ -68,7 +70,7 @@ public class AStar {
                         successor[x].g = q.g + traffic[successor[x].x][successor[x].y];
                         successor[x].h = distanceCoefficient * distance(successor[x].x, successor[x].y,endX,endY);
                         successor[x].f = successor[x].g + successor[x].h;
-                        boolean betterSolutionExistsForSamePlace = isBetterSolutionExistsForSamePlace(successor, x);
+                        boolean betterSolutionExistsForSamePlace = doesBetterSolutionExistForSamePlace(successor, x);
                         if (!betterSolutionExistsForSamePlace) {
                             addToList(successor[x], "open");
                         }
@@ -83,7 +85,7 @@ public class AStar {
                         successor[x].g = q.g + traffic[successor[x].x][successor[x].y];
                         successor[x].h = distanceCoefficient * distance(successor[x].x, successor[x].y,endX,endY);
                         successor[x].f = successor[x].g + successor[x].h;
-                        boolean betterSolutionExistsForSamePlace = isBetterSolutionExistsForSamePlace(successor, x);
+                        boolean betterSolutionExistsForSamePlace = doesBetterSolutionExistForSamePlace(successor, x);
                         if (!betterSolutionExistsForSamePlace) {
                             addToList(successor[x], "open");
                         }
@@ -98,7 +100,7 @@ public class AStar {
                         successor[x].g = q.g + traffic[successor[x].x][successor[x].y];
                         successor[x].h = distanceCoefficient * distance(successor[x].x, successor[x].y,endX,endY);
                         successor[x].f = successor[x].g + successor[x].h;
-                        boolean betterSolutionExistsForSamePlace = isBetterSolutionExistsForSamePlace(successor, x);
+                        boolean betterSolutionExistsForSamePlace = doesBetterSolutionExistForSamePlace(successor, x);
                         if (!betterSolutionExistsForSamePlace) {
                             addToList(successor[x], "open");
                         }
@@ -113,7 +115,7 @@ public class AStar {
                         successor[x].g = q.g + traffic[successor[x].x][successor[x].y];
                         successor[x].h = distanceCoefficient * distance(successor[x].x, successor[x].y,endX,endY);
                         successor[x].f = successor[x].g + successor[x].h;
-                        boolean betterSolutionExistsForSamePlace = isBetterSolutionExistsForSamePlace(successor, x);
+                        boolean betterSolutionExistsForSamePlace = doesBetterSolutionExistForSamePlace(successor, x);
                         if (!betterSolutionExistsForSamePlace) {
                             addToList(successor[x], "open");
                         }
@@ -128,7 +130,7 @@ public class AStar {
                         successor[x].g = q.g + traffic[successor[x].x][successor[x].y];
                         successor[x].h = distanceCoefficient * distance(successor[x].x, successor[x].y,endX,endY);
                         successor[x].f = successor[x].g + successor[x].h;
-                        boolean betterSolutionExistsForSamePlace = isBetterSolutionExistsForSamePlace(successor, x);
+                        boolean betterSolutionExistsForSamePlace = doesBetterSolutionExistForSamePlace(successor, x);
                         if (!betterSolutionExistsForSamePlace) {
                             addToList(successor[x], "open");
                         }
@@ -143,7 +145,7 @@ public class AStar {
                         successor[x].g = q.g + traffic[successor[x].x][successor[x].y];
                         successor[x].h = distanceCoefficient * distance(successor[x].x, successor[x].y,endX,endY);
                         successor[x].f = successor[x].g + successor[x].h;
-                        boolean betterSolutionExistsForSamePlace = isBetterSolutionExistsForSamePlace(successor, x);
+                        boolean betterSolutionExistsForSamePlace = doesBetterSolutionExistForSamePlace(successor, x);
                         if (!betterSolutionExistsForSamePlace) {
                             addToList(successor[x], "open");
                         }
@@ -151,10 +153,22 @@ public class AStar {
                 }
             }
             addToList(q,"closed");
+            //find 3 solutions before printing out the best one
+            if(completeList.length>=10){
+                bestF = 100*distance(startX,startY,endX,endY);
+                bestIndex = 0;
+                for(int x =0;x<completeList.length;x++){
+                    if(completeList[x].f<bestF) {
+                        bestF = completeList[x].f;
+                        bestIndex = x;
+                    }
+                }
+                printOutPath(completeList[bestIndex],traffic,startX,startY,endX,endY,distanceCoefficient);
+            }
         }
     }
 
-    private boolean isBetterSolutionExistsForSamePlace(Path[] successor, int x) {
+    private boolean doesBetterSolutionExistForSamePlace(Path[] successor, int x) {
         boolean betterSolutionExistsForSamePlace = false;
         for (int y = 0; y < openList.length; y++) {
             if ((((openList[y].x == successor[x].x && openList[y].y == successor[x].y && openList[y].f < successor[x].f)) || (y<closedList.length && (closedList[y].x == successor[x].x && closedList[y].y == successor[x].y && closedList[y].f < successor[x].f)))) {
@@ -168,20 +182,27 @@ public class AStar {
     int distance(int x, int y,int endX,int endY){
         return Math.max(Math.abs(x-endX),Math.abs(y-endY));
     }
-    void addToList(Path input,String openOrClosed){
-        if(openOrClosed.equals("open")){
+    void addToList(Path input,String list){
+        if(list.equals("open")){
             Path[] temp = new Path[openList.length+1];
             System.arraycopy(openList,0,temp,0,openList.length);
             temp[temp.length-1]=input;
             openList=new Path[temp.length];
             System.arraycopy(temp,0,openList,0,temp.length);
         }
-        if(openOrClosed.equals("closed")){
+        if(list.equals("closed")){
             Path[] temp = new Path[closedList.length+1];
             System.arraycopy(closedList,0,temp,0,closedList.length);
             temp[temp.length-1]=input;
             closedList=new Path[temp.length];
             System.arraycopy(temp,0,closedList,0,temp.length);
+        }
+        if(list.equals("complete")){
+            Path[] temp = new Path[completeList.length+1];
+            System.arraycopy(completeList,0,temp,0,completeList.length);
+            temp[temp.length-1]=input;
+            completeList=new Path[temp.length];
+            System.arraycopy(temp,0,completeList,0,temp.length);
         }
     }
     void removeFromOpenList(int index){

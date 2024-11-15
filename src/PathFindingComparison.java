@@ -1,18 +1,18 @@
 public class PathFindingComparison {
     int[][] traffic;
-    int size = 10;
+    int size = 50;
     int startX =0;
     int startY=0;
     int endX=size-1;
     int endY=size-1;
     public PathFindingComparison() {
         initializeTraffic(size,false,startX,startY,endX,endY);
-        new AStar(traffic,startX,startY,endX,endY,0,size);
-        System.out.println();
-        /*for(int x =100;x>=0;x-=10){
+        //new AStar(traffic,startX,startY,endX,endY,0,size);
+        //System.out.println();
+        for(int x =100;x>=0;x-=10){
             new AStar(traffic,startX,startY,endX,endY,x,size);
             System.out.println();
-        }*/
+        }
         new MrHalesTrafficChallenge(traffic,size,startX,startY,endX,endY);
         System.out.println("The most direct path would have an average cost of "+(size*50)+".");
 
@@ -21,7 +21,7 @@ public class PathFindingComparison {
     public static void main(String[] args) {
         new PathFindingComparison();
     }
-    void initializeTraffic(int size, boolean print,int startX,int startY,int endX,int endY){
+    void initializeTraffic(int size, @SuppressWarnings("SameParameterValue") boolean print, int startX, int startY, int endX, int endY){
         traffic = new int[size][size];
         if(print) {
             for (int y = 0; y < traffic[0].length; y++) {
@@ -38,7 +38,9 @@ public class PathFindingComparison {
                         System.out.print(" ");
                     }
                 }
+                System.out.println();
             }
+            System.out.println();
         } else{
             for (int y = 0; y < traffic[0].length; y++) {
                 for (int x = 0; x < traffic.length; x++) {

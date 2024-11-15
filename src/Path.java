@@ -15,9 +15,6 @@ public class Path {
         this.x=x;
         this.y=y;
     }
-    public Path(int x){
-        this.x=x;
-    }
     public Path(){
 
     }
