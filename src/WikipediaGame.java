@@ -1,12 +1,15 @@
 import java.net.URL;
 
-public class WikipediaGame {
+//TODO this is currently Dijkstra's so we need some kind of heuristic function or this will continue to take forever
+
+public class WikipediaGame{
     URL startPage;
     URL endPage;
     WikipediaPage[] toCheck;
     WikipediaPage[] checkedAlready;
     WikipediaPage[] cleanedInput;
     WikipediaPage q;
+    boolean done = false;
     public static void main(String[] args) {
         new WikipediaGame();
     }
@@ -18,7 +21,7 @@ public class WikipediaGame {
             toCheck = new WikipediaPage[1];
             checkedAlready = new WikipediaPage[0];
             toCheck[0] = new WikipediaPage(startPageURLString,0);
-            while(toCheck.length>0){
+            while(toCheck.length>0&&!done){
                 int bestG = 100;
                 int bestIndex = 0;
                 for(int x =0;x<toCheck.length;x++){
@@ -31,7 +34,7 @@ public class WikipediaGame {
                 System.out.println("Checking: "+q.url.getFile().substring(6));
                 removeFromToCheck(bestIndex);
                 addToList("checkedAlready",q);
-                addArraytoToCheck(q.findChildren());
+                addArraytoToCheck(q.findChildren(endPage));
             }
 
 
@@ -70,18 +73,21 @@ public class WikipediaGame {
     }
     void addArraytoToCheck(WikipediaPage[] input){
         cleanedInput = new WikipediaPage[0];
-        if(q.url.getFile().equals("/wiki/Austin,_Texas")){
-            System.out.println();
-        }
         for (WikipediaPage x : input) { //first, delete all the things that you're about to add for which there's already a better version out there
             if (!(x.betterPathExistsToSamePlace(toCheck) || x.betterPathExistsToSamePlace(checkedAlready))) {
+                if(x.isGoal){
+                    x.printOutPath();
+                    done = true;
+                }
                 addToList("cleanedInput", x);
             }
         }
 
         WikipediaPage[] temp = new WikipediaPage[cleanedInput.length+toCheck.length];
         System.arraycopy(toCheck,0,temp,0,toCheck.length);
-        System.arraycopy(cleanedInput,0,temp,0,cleanedInput.length);
+        for(int x = toCheck.length;x<cleanedInput.length+toCheck.length;x++){
+            temp[x]=cleanedInput[x-toCheck.length];
+        }
         toCheck = new WikipediaPage[temp.length];
         System.arraycopy(temp,0,toCheck,0,temp.length);
     }
