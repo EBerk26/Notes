@@ -5,6 +5,8 @@ public class WikipediaPage {
     URL url;
     WikipediaPage parent;
     int g;
+    double f;
+    int h;
     boolean hasParent = false;
     boolean isGoal = false;
 
@@ -37,6 +39,7 @@ public class WikipediaPage {
         this.parent=parent;
         this.g=parent.g+1;
         hasParent = true;
+        f=g+h;
     }
     WikipediaPage[] findChildren(URL goal){
         WikipediaPage[] output = new WikipediaPage[0];
@@ -49,7 +52,7 @@ public class WikipediaPage {
                     if(link.contains("wikipedia")) {
                         URL urlLink = new URL(link);
                         WikipediaPage currentWikipediaPage = new WikipediaPage(urlLink);
-                        if (urlLink.getHost().equals("en.wikipedia.org") && urlLink.getFile().contains("wiki/") && !(WikipediaPageArrayContainsURL(output, currentWikipediaPage)) && !urlLink.getFile().contains(":") && !urlLink.getFile().equals("/wiki/Main_Page") && !link.contains("(")) {
+                        if (urlLink.getHost().equals("en.wikipedia.org") && urlLink.getFile().contains("wiki/") && !(WikipediaPageArrayContainsURL(output, currentWikipediaPage)) && !urlLink.getFile().contains(":") && !urlLink.getFile().equals("/wiki/Main_Page") && !link.contains("(")&&!urlLink.getFile().contains("Geographic_coordinate_system")) {
                             WikipediaPage[] temp = new WikipediaPage[output.length + 1];
                             System.arraycopy(output, 0, temp, 0, output.length);
                             temp[temp.length - 1] = new WikipediaPage(urlLink);
@@ -69,6 +72,8 @@ public class WikipediaPage {
         } catch (Exception e){
             System.out.println(e.getMessage());
         }
+        //TODO CALCULATE A HEURISTIC
+        f=g+h;
         return output;
     }
     WikipediaPage[] findChildren(){
@@ -82,7 +87,7 @@ public class WikipediaPage {
                     if(link.contains("wikipedia")) {
                         URL urlLink = new URL(link);
                         WikipediaPage currentWikipediaPage = new WikipediaPage(urlLink);
-                        if (urlLink.getHost().equals("en.wikipedia.org") && urlLink.getFile().contains("wiki/") && !(WikipediaPageArrayContainsURL(output, currentWikipediaPage)) && !urlLink.getFile().contains(":") && !urlLink.getFile().equals("/wiki/Main_Page") && !link.contains("(")) {
+                        if (urlLink.getHost().equals("en.wikipedia.org") && urlLink.getFile().contains("wiki/") && !(WikipediaPageArrayContainsURL(output, currentWikipediaPage)) && !urlLink.getFile().contains(":") && !urlLink.getFile().equals("/wiki/Main_Page") && !link.contains("(")&&!urlLink.getFile().equals("Geographic_coordinate_system")) {
                             WikipediaPage[] temp = new WikipediaPage[output.length + 1];
                             System.arraycopy(output, 0, temp, 0, output.length);
                             temp[temp.length - 1] = new WikipediaPage(urlLink);

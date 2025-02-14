@@ -1,6 +1,7 @@
 import java.net.URL;
+import java.util.concurrent.Executors;
 
-//TODO this is currently Dijkstra's so we need some kind of heuristic function or this will continue to take forever
+//TODO this is currently an exhaustive search so we need some kind of heuristic/distance function or this will continue to take forever
 
 public class WikipediaGame{
     URL startPage;
@@ -15,6 +16,7 @@ public class WikipediaGame{
     }
     public WikipediaGame() {
         try {
+            Executors.newFixedThreadPool(16);
             String startPageURLString = "https://en.wikipedia.org/wiki/Glen_Powell";
             startPage = new URL(startPageURLString);
             endPage = new URL("https://en.wikipedia.org/wiki/Kevin_Bacon");
@@ -22,11 +24,11 @@ public class WikipediaGame{
             checkedAlready = new WikipediaPage[0];
             toCheck[0] = new WikipediaPage(startPageURLString,0);
             while(toCheck.length>0&&!done){
-                int bestG = 100;
+                double bestF = 100;
                 int bestIndex = 0;
                 for(int x =0;x<toCheck.length;x++){
-                    if(toCheck[x].g<bestG) {
-                        bestG = toCheck[x].g;
+                    if(toCheck[x].f<bestF) {
+                        bestF = toCheck[x].f;
                         bestIndex = x;
                     }
                 }
