@@ -18,14 +18,16 @@ public class CHOMPPrint {
         isWinState = new boolean[totalGameStates];
         isWinState[0] = true;
         isWinState[1] = false;
-        ArrayList<orderedPair> listOfMoves = new ArrayList<>(new ArrayList<>(Arrays.asList(new orderedPair(-1,-1),new orderedPair(0,0))));
+        orderedPair[] listOfMoves = new orderedPair[totalGameStates];
+        listOfMoves[0] = new orderedPair(-1,-1);
+        listOfMoves[1] = new orderedPair(0,0);
         for(int x=2; x<totalGameStates;x++){
-            listOfMoves.add(chooseBestMove(gameStates.get(x),x));
+            listOfMoves[x] = chooseBestMove(gameStates.get(x),x);
         }
-        for(int x = 0; x<listOfMoves.size();x++){
+        for(int x = 0; x<listOfMoves.length;x++){
             System.out.println(gameStates.get(x));
             System.out.println("Is Win: "+isWinState[x]);
-            listOfMoves.get(x).printInfo();
+            listOfMoves[x].printInfo();
             System.out.println();
         }
     }
@@ -43,10 +45,16 @@ public class CHOMPPrint {
     }
 
     orderedPair chooseBestMove(ArrayList<Integer> gameState,int whichGameState) {
-        ArrayList<orderedPair> possibleOrderedPairs = new ArrayList<>();
+        int totalPossibleMoves = 0;
+        for(int i: gameState){
+            totalPossibleMoves+=i;
+        }
+        orderedPair[] possibleOrderedPairs = new orderedPair[totalPossibleMoves];
+        int i =0;
         for (int x = 0; x < gameState.size(); x++) {
             for (int y = 0; y< gameState.get(x); y++) {
-                possibleOrderedPairs.add(new orderedPair(x, y));
+                possibleOrderedPairs[i] = new orderedPair(x,y);
+                i++;
             }
         }
         for (orderedPair c : possibleOrderedPairs) {
@@ -65,8 +73,16 @@ public class CHOMPPrint {
             }
         }
         isWinState[whichGameState] = false;
+        //play the move that is first, highest, and second, furthest to the right - this basically removes the fewest possible chips if you know you're going to lose
+        int highestY = gameState.get(0);
+        for (int x = 0;x<gameState.size();x++){
+            if(gameState.get(x)<highestY){
+                System.out.println("Solved: Game State "+(whichGameState+1)+"/"+totalGameStates+" total game states.");
+                return new orderedPair(x-1,highestY-1);
+            }
+        }
+        System.out.println("Solved: Game State "+(whichGameState+1)+"/"+totalGameStates+" total game states.");
         return new orderedPair(0,0);
-        //TODO: pick a better move in a loss situation
     }
 }
 class orderedPair{
