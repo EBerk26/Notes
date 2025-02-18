@@ -7,12 +7,13 @@ public class CHOMPPrint {
         new CHOMPPrint();
     }
 
-    int boardLength = 10;
+    int boardLength = 8;
     ArrayList<ArrayList<Integer>> gameStates = new ArrayList<>();
     boolean[] isWinState;
     int totalGameStates;
 
     public CHOMPPrint() {
+        final long startTime = System.currentTimeMillis();
         listGameStates(new ArrayList<>(), boardLength);
         totalGameStates = gameStates.size();
         isWinState = new boolean[totalGameStates];
@@ -30,6 +31,7 @@ public class CHOMPPrint {
             listOfMoves[x].printInfo();
             System.out.println();
         }
+        System.out.println("Solving "+boardLength+"x"+boardLength+" CHOMP took "+(System.currentTimeMillis()-startTime)/1000+" second(s).");
     }
 
     void listGameStates(ArrayList<Integer> previousColumns, int max) {
@@ -45,6 +47,11 @@ public class CHOMPPrint {
     }
 
     orderedPair chooseBestMove(ArrayList<Integer> gameState,int whichGameState) {
+        if(canMakeV(gameState)){
+            isWinState[whichGameState] = true;
+            return new orderedPair(1,1);
+
+        }
         int totalPossibleMoves = 0;
         for(int i: gameState){
             totalPossibleMoves+=i;
@@ -68,7 +75,7 @@ public class CHOMPPrint {
             ArrayList<Object> choice = new ArrayList<>(Arrays.asList(arrayVersion));
             if(!isWinState[(gameStates.indexOf(choice))]){ //if the choice has been previously marked as a loss state, play it and mark this one as a win.
                 isWinState[whichGameState] = true;
-                System.out.println("Solved: Game State "+(whichGameState+1)+"/"+totalGameStates+" total game states.");
+                //System.out.println("Solved: Game State "+(whichGameState+1)+"/"+totalGameStates+" total game states.");
                 return c;
             }
         }
@@ -77,12 +84,33 @@ public class CHOMPPrint {
         int highestY = gameState.get(0);
         for (int x = 0;x<gameState.size();x++){
             if(gameState.get(x)<highestY){
-                System.out.println("Solved: Game State "+(whichGameState+1)+"/"+totalGameStates+" total game states.");
+                //System.out.println("Solved: Game State "+(whichGameState+1)+"/"+totalGameStates+" total game states.");
                 return new orderedPair(x-1,highestY-1);
             }
         }
-        System.out.println("Solved: Game State "+(whichGameState+1)+"/"+totalGameStates+" total game states.");
+        //System.out.println("Solved: Game State "+(whichGameState+1)+"/"+totalGameStates+" total game states.");
         return new orderedPair(0,0);
+    }
+    boolean canMakeV(ArrayList<Integer> gameState){
+        if(gameState.get(1)<2){
+            return false;
+        }
+        int numberInFirstColumn = gameState.get(0);
+        for (int x =0;x<gameState.size();x++){
+            if(x<=numberInFirstColumn-1){
+                if(gameState.get(x)<1){
+                    return false;
+                }
+            } else {
+                if (gameState.get(x)!=0){
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+    CHOMPPrint(boolean test){
+        System.out.println(canMakeV(new ArrayList<>(Arrays.asList(9,5,4,3,2,2,2,2,2,0))));
     }
 }
 class orderedPair{
