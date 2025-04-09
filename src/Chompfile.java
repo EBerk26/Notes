@@ -1,14 +1,15 @@
-import java.io.Serializable;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Hashtable;
 
-public class CHOMPPrint {
-
+public class Chompfile {
     public static void main(String[] args) {
-        new CHOMPPrint();
+        new Chompfile();
     }
-
     int boardLength = 10;
     ArrayList<ArrayList<Integer>> gameStates = new ArrayList<>();
     int totalGameStates;
@@ -22,9 +23,9 @@ public class CHOMPPrint {
     int index;
     int numberInFirstColumn;
     Hashtable<ArrayList<Integer>,Boolean> hashtable;
+    Hashtable<ArrayList<Integer>,orderedPair> solutions = new Hashtable<>();
 
-    public CHOMPPrint() {
-        final long startTime = System.currentTimeMillis();
+    public Chompfile() {
         listGameStates(new ArrayList<>(),boardLength);
         totalGameStates = gameStates.size();
         hashtable = new Hashtable<>();
@@ -35,18 +36,20 @@ public class CHOMPPrint {
         listOfMoves[1] = new orderedPair(0,0);
         for(int x=2; x<totalGameStates;x++){
             if(listOfMoves[x] == null) {
-            listOfMoves[x] = chooseBestMove(gameStates.get(x), x);
+                listOfMoves[x] = chooseBestMove(gameStates.get(x));
             }
         }
         for(int x = 0; x<listOfMoves.length;x++){
-            System.out.println(gameStates.get(x));
-            System.out.println("Is Win: "+hashtable.get(gameStates.get(x)));
-            listOfMoves[x].printInfo();
-            System.out.println();
+            solutions.put(gameStates.get(x),listOfMoves[x]);
         }
-        System.out.println("Solving "+boardLength+"x"+boardLength+" CHOMP took "+(System.currentTimeMillis()-startTime)/1000+" second(s).");
-    }
 
+        try (ObjectOutputStream oos = new ObjectOutputStream(Files.newOutputStream(Paths.get("/Users/eliberk/Desktop/CS2/Chomp/chompSolutions.ser")))) {
+            oos.writeObject(solutions);
+            System.out.println("Hashtable saved successfully.");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     void listGameStates(ArrayList<Integer> previousColumns, int max) {
         if (previousColumns.size() == boardLength) {
@@ -61,7 +64,7 @@ public class CHOMPPrint {
     }
 
 
-    orderedPair chooseBestMove(ArrayList<Integer> gameState,int whichGameState) {
+    orderedPair chooseBestMove(ArrayList<Integer> gameState) {
         if(canMakeV(gameState)){
             hashtable.put(gameState,true);
             return new orderedPair(1,1);
@@ -89,7 +92,7 @@ public class CHOMPPrint {
             if(!hashtable.get(new ArrayList<>(Arrays.asList(arrayVersion)))){//if the choice has been previously marked as a loss state, play it and mark this one as a win.
                 hashtable.put(gameState,true);
                 //System.out.println("Solved: Game State "+(whichGameState+1)+"/"+totalGameStates+" total game states.");
-               //go through and find any game state larger than this where the same move brings you to the same place
+                //go through and find any game state larger than this where the same move brings you to the same place
                /*for(int x = whichGameState+1;x<gameStates.size();x++){
                    if(listOfMoves[x]!=null){
                        if(moveGivesSameResult(c,gameStates.get(x))){
@@ -108,41 +111,14 @@ public class CHOMPPrint {
             if(gameState.get(x)<highestY){
                 //System.out.println("Solved: Game State "+(whichGameState+1)+"/"+totalGameStates+" total game states.");
                 leastRemoval = new orderedPair(x-1,highestY-1);
-                mirrorImage(gameState,leastRemoval,false);
+                //mirrorImage(gameState,leastRemoval,false);
                 return leastRemoval;
             }
         }
         //System.out.println("Solved: Game State "+(whichGameState+1)+"/"+totalGameStates+" total game states.");
         return new orderedPair(0,0);
     }
-    void mirrorImage(ArrayList<Integer> gameState,orderedPair solution, boolean isWin){ //solve the mirror image case
-        ArrayList<Integer> mirroredGameState = new ArrayList<>();
-        for(int y =0;y<gameState.get(0);y++){
-            int i = 0;
-            int x = 0;
-            while(x<gameState.size()&&gameState.get(x)>y){
-                i++;
-                x++;
-            }
-            mirroredGameState.add(i);
-        }
-        while(mirroredGameState.size()<gameState.size()){
-            mirroredGameState.add(0);
-        }
-        index = gameStates.indexOf(mirroredGameState);
-        listOfMoves[index] = solution.flip();
-        hashtable.put(mirroredGameState,isWin);
-    }
     @SuppressWarnings("unused")
-    boolean moveGivesSameResult(orderedPair move, ArrayList<Integer> gameState){
-        for(int xcoord = move.x;xcoord<gameState.size();xcoord++){
-            if((gameState.get(xcoord))<move.y){
-                return false;
-            }
-        }
-        return true;
-        //this method is flawed because it doesn't take into consideration the gameState from which the move was found to be the right one
-    }
     boolean canMakeV(ArrayList<Integer> gameState){
         if(gameState.get(1)<2){
             return false;
@@ -160,24 +136,5 @@ public class CHOMPPrint {
             }
         }
         return true;
-    }
-    @SuppressWarnings("unused")
-    CHOMPPrint(int test){
-        System.out.println(canMakeV(new ArrayList<>(Arrays.asList(9,5,4,3,2,2,2,2,2,0))));
-    }
-}
-class orderedPair implements Serializable {
-    int x;
-    int y;
-    public orderedPair(int x, int y) {
-        this.x = x;
-        this.y = y;
-    }
-    void printInfo(){
-        System.out.println("("+x+","+y+")");
-    }
-    orderedPair flip(){
-        //noinspection SuspiciousNameCombination
-        return new orderedPair(y,x);
     }
 }
