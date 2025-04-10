@@ -26,24 +26,23 @@ public class Chompfile {
     Hashtable<ArrayList<Integer>,orderedPair> solutions = new Hashtable<>();
 
     public Chompfile() {
-        listGameStates(new ArrayList<>(),boardLength);
-        totalGameStates = gameStates.size();
-        hashtable = new Hashtable<>();
-        hashtable.put(gameStates.get(0),true);
-        hashtable.put(gameStates.get(1),false);
-        listOfMoves = new orderedPair[totalGameStates];
-        listOfMoves[0] = new orderedPair(-1,-1);
-        listOfMoves[1] = new orderedPair(0,0);
-        for(int x=2; x<totalGameStates;x++){
-            if(listOfMoves[x] == null) {
-                listOfMoves[x] = chooseBestMove(gameStates.get(x));
-            }
-        }
-        for(int x = 0; x<listOfMoves.length;x++){
-            solutions.put(gameStates.get(x),listOfMoves[x]);
-        }
-
         try (ObjectOutputStream oos = new ObjectOutputStream(Files.newOutputStream(Paths.get("/Users/eliberk/Desktop/CS2/Chomp/chompSolutions.ser")))) {
+            listGameStates(new ArrayList<>(),boardLength);
+            totalGameStates = gameStates.size();
+            hashtable = new Hashtable<>();
+            hashtable.put(gameStates.get(0),true);
+            hashtable.put(gameStates.get(1),false);
+            listOfMoves = new orderedPair[totalGameStates];
+            listOfMoves[0] = new orderedPair(-1,-1);
+            listOfMoves[1] = new orderedPair(0,0);
+            for(int x=2; x<totalGameStates;x++){
+                if(listOfMoves[x] == null) {
+                    listOfMoves[x] = chooseBestMove(gameStates.get(x));
+                }
+            }
+            for(int x = 0; x<listOfMoves.length;x++){
+                solutions.put(gameStates.get(x),listOfMoves[x]);
+            }
             oos.writeObject(solutions);
             System.out.println("Hashtable saved successfully.");
         } catch (IOException e) {

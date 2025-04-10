@@ -35,7 +35,7 @@ public class CHOMPPrint {
         listOfMoves[1] = new orderedPair(0,0);
         for(int x=2; x<totalGameStates;x++){
             if(listOfMoves[x] == null) {
-            listOfMoves[x] = chooseBestMove(gameStates.get(x), x);
+            listOfMoves[x] = chooseBestMove(gameStates.get(x));
             }
         }
         for(int x = 0; x<listOfMoves.length;x++){
@@ -60,8 +60,21 @@ public class CHOMPPrint {
         }
     }
 
+    public CHOMPPrint(int stupid){
+        //for loop game state list
+            for(int x = 0; x<=3;x++){
+                for(int y=0;y<=x;y++){
+                    for(int z = 0; z<=y;z++){
+                        System.out.println(x +String.valueOf(y)+ z);
+                    }
+                }
+            }
+    }
 
-    orderedPair chooseBestMove(ArrayList<Integer> gameState,int whichGameState) {
+
+
+
+    orderedPair chooseBestMove(ArrayList<Integer> gameState) {
         if(canMakeV(gameState)){
             hashtable.put(gameState,true);
             return new orderedPair(1,1);
@@ -160,10 +173,6 @@ public class CHOMPPrint {
             }
         }
         return true;
-    }
-    @SuppressWarnings("unused")
-    CHOMPPrint(int test){
-        System.out.println(canMakeV(new ArrayList<>(Arrays.asList(9,5,4,3,2,2,2,2,2,0))));
     }
 }
 class orderedPair implements Serializable {
